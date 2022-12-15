@@ -5,20 +5,20 @@
         <span>欢迎访问OA系统</span>
       </div>
       <el-form class="login_fields" ref="loginForm" :model="loginForm" :rules="loginRules" auto-complete="on" label-position="left">
-        <el-form-item class="login_fields__user" prop="">
+        <el-form-item class="login_fields__user" prop="account">
           <div class="icon">
             <img src="./img/user_icon_copy.png">
           </div>
           <el-input placeholder="请输入用户名" type="text" v-model="loginForm.account" />
         </el-form-item>
-        <el-form-item class="login_fields__password">
+        <el-form-item class="login_fields__password" prop="password">
           <div class="icon">
             <img src="./img/lock_icon_copy.png">
           </div>
           <el-input placeholder="请输入密码" type="password" v-model="loginForm.password" />
         </el-form-item>
         <div class="login_fields__submit">
-          <el-button size="medium" type="primary" :loading="loading" @click="sign">登录</el-button>
+          <el-button size="medium" type="primary" :loading="loading" @click.native.prevent="sign">登录</el-button>
         </div>
       </el-form>
     </div>
@@ -37,7 +37,18 @@ export default {
         account: '',
         password: ''
       },
-      loginRules: {}
+      loginRules: {
+        account: [
+          {
+            require: true, message: '请输入正确的用户名', trigger: 'blur'
+          }
+        ],
+        password: [
+          {
+            require: true, message: '请输入正确的密码', trigger: 'blur'
+          }
+        ],
+      }
     }
   },
   mounted() {
@@ -52,7 +63,15 @@ export default {
       })
     },
     sign() {
-
+      this.$refs.loginForm.validate( vaid => {
+        if (vaid) {
+          this.loading = true
+          this.$router.push('/')
+          this.loading = false
+        } else {
+          this.$message.warning('数据不合理')
+        }
+      })
     }
   }
 }
@@ -112,15 +131,15 @@ export default {
       left: 0;
       padding: 10px 65px;
       box-shadow: none;
-      /deep/.el-input__inner {
+      /deep/ & .el-input__inner {
         background: transparent;
         border: none;
         outline: none;
         color: #afb1be;
       }
-    }
-    .el-input[type='password'] {
-      color: #DC6180 !important;
+      /deep/ & .el-input__inner[type='password'] {
+        color: #DC6180 !important;
+      }
     }
     .login_fields__user,
     .login_fields__password {
@@ -129,9 +148,12 @@ export default {
     .login_fields__submit {
       position: relative;
       top: 35px;
-      left: 10%;
-      width: 80%;
+      left: 0;
+      padding: 0 30px;
       right: 0;
+      .el-button {
+        width: 100%;
+      }
     }
   }
 }

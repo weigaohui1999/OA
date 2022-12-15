@@ -1,5 +1,9 @@
 const path = require("path");
 
+function resolve (dir) {
+  return path.join(__dirname, dir)
+}
+
 module.exports = {
   lintOnSave: false,
   outputDir: "dist",
@@ -7,7 +11,7 @@ module.exports = {
   productionSourceMap: true,
 
   devServer: {
-    port: 88,
+    port: 89,
     disableHostCheck: true,
     /*overlay: {
       warning: false,
@@ -23,5 +27,23 @@ module.exports = {
         path.resolve(__dirname, "./src/assets/theme.less"),
       ],
     },
+  },
+  chainWebpack (config) {
+    // set svg-sprite-loader
+    config.module
+        .rule('svg')
+        .exclude.add(resolve('src/icons'))
+        .end()
+    config.module
+        .rule('icons')
+        .test(/\.svg$/)
+        .include.add(resolve('src/icons'))
+        .end()
+        .use('svg-sprite-loader')
+        .loader('svg-sprite-loader')
+        .options({
+          symbolId: 'icon-[name]'
+        })
+        .end()
   }
 }

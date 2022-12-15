@@ -1,23 +1,21 @@
-import Cookies from "js-cookie"
-
 // 设置时间戳
 export function setTimeStamp() {
-    return Cookies.set('timekey', Date.now())
+    return sessionStorage.setItem('timekey', Date.now())
 }
 
 // 获取时间戳
 export function getTimeStamp() {
-    return Cookies.get('timekey')
+    return sessionStorage.getItem('timekey')
 }
 
 export function getToken() {
-    return Cookies.get('token')
+    return sessionStorage.getItem('token')
 }
 
 export function setToken(token) {
-    return Cookies.set('token', token)
+    return sessionStorage.setItem('token', token)
 }
 
 export function removeToken() {
-    return Cookies.remove('token')
+    return sessionStorage.removeItem('token')
 }

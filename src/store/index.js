@@ -1,6 +1,9 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import user from '@/store/modules/user'
+import app from '@/store/modules/app'
+import permission from '@/store/modules/permission'
+import settings from '@/store/modules/settings'
 import getters from "@/store/getters";
 
 Vue.use(Vuex)
@@ -32,6 +35,9 @@ export default new Vuex.Store({
   getters: getters,
   actions: {},
   modules: {
-    user
+    user,
+    app,
+    permission,
+    settings
   }
 })

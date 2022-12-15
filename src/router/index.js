@@ -1,5 +1,6 @@
 import Vue from "vue";
 import Router from "vue-router";
+import Layout from "@/layout/index.vue";
 
 Vue.use(Router);
 
@@ -7,74 +8,100 @@ const viewport = {
   content: "width=device-width, initial-scale=1.0, user-scalable=no"
 }
 
-const router = new Router({
-  //mode: 'history',
-  //base: __dirname,
-  routes: [
-    {
-      path: '/',
-      redirect: '/index'
-    },
-    {
-      path: "/index",
-      name: "index",
-      component: () => import("@/views/Index.vue"),
-      meta: {title: 'OA工作流', viewport: viewport}
-    },
-    {
-      path: "/login",
-      name: "login",
-      component: () => import("@/views/login/index.vue"),
-      meta: {title: '登录', viewport: viewport}
-    },
-    {
-      path: "/workspace",
-      name: "workspace",
-      component: () => import("@/views/workspace/WorkSpace.vue"),
-      meta: {title: '工作区', viewport: viewport}
-    },
-    {
-      path: "/workspace/process/instance/tabs",
-      name: "processInstanceTabs",
-      component: () => import("@/views/workspace/process/ProcessInstanceTabs.vue"),
-      meta: {title: '流程详情', viewport: viewport}
-    },
-    {
-      path: "/formsPanel",
-      name: "formsPanel",
-      component: () => import("@/views/admin/FormsPanel.vue"),
-      meta: {title: '表单列表', viewport: viewport}
-    },
-    {
-      path: "/admin/design",
-      name: "design",
-      component: () => import("@/views/admin/FormProcessDesign.vue"),
-      meta: {title: '表单流程设计', viewport: viewport},
-      children: [
-        {
-          path: "baseSetting",
-          name: "baseSetting",
-          component: () => import("@/views/admin/layout/FormBaseSetting.vue"),
-          meta: {title: '基础设置'}
-        }, {
-          path: "formSetting",
-          name: "formSetting",
-          component: () => import("@/views/admin/layout/FormDesign.vue"),
-          meta: {title: '表单设计'}
-        }, {
-          path: "processDesign",
-          name: "processDesign",
-          component: () => import("@/views/admin/layout/ProcessDesign.vue"),
-          meta: {title: '流程设计'}
-        }, {
-          path: "proSetting",
-          name: "proSetting",
-          component: () => import("@/views/admin/layout/FormProSetting.vue"),
-          meta: {title: '高级设置'}
-        }
-      ]
-    }
-  ]
+export const constantRoutes = [
+  {
+    path: '/',
+    component: Layout,
+    redirect: '/workspace',
+    children: [{
+      path: "workspace",
+      component: () => import("@/views/workspace/index.vue"),
+      meta: {title: '审批列表', icon: 'workspace', viewport: viewport}
+    }]
+  },
+  {
+    path: '/login',
+    component: () => import('@/views/login/index'),
+    hidden: true
+  },
+  {
+    path: '/404',
+    component: () => import('@/views/404'),
+    hidden: true
+  }
+]
+export const asyncRouter = [
+  {
+    path: '/pending',
+    component: Layout,
+    name: 'pending',
+    children: [{
+      path: '',
+      component: () => import('@/views/pending'),
+      meta: {title: '待我处理', icon: 'pending', viewport: viewport}
+    }]
+  },
+  {
+    path: "/processed",
+    component: Layout,
+    children: [{
+      path: "",
+      name: "processed",
+      component: () => import("@/views/processed"),
+      meta: {title: '已处理的', icon: 'processed', viewport: viewport},
+    }]
+  },
+  {
+    path: "/launch",
+    component: Layout,
+    children: [{
+      path: "",
+      component: () => import("@/views/launch/index.vue"),
+      meta: {title: '我发起的', icon: 'launch', viewport: viewport}
+    }]
+  },
+  {
+    path: "/about",
+    component: Layout,
+    children: [{
+      path: "",
+      meta: {title: '关于我的', icon: 'about', viewport: viewport},
+      component: () => import("@/views/about/index.vue"),
+    }]
+  },
+  {
+    path: "/instances",
+    component: Layout,
+    children: [{
+      path: "",
+      meta: {title: '数据管理', icon: 'instances', viewport: viewport},
+      component: () => import("@/views/instances/index.vue"),
+    }]
+  },
+  {
+    path: "/formsPanel",
+    component: Layout,
+    children: [{
+      path: "",
+      meta: {title: '流程管理', icon: 'formsPanel', viewport: viewport},
+      component: () => import("@/views/formsPanel/index.vue"),
+    }]
+  }
+]
+
+const createRouter = () => new Router({
+  // 路由有两种模式： 1.hash模式 前端路由模式，#后面的地址不会经过请求服务器  2.histoty模式：正常的/访问模式，特点是后端访问，任意地址的变化都会访问服务器
+  mode: 'history', // require service support
+  // base: '/hr/', // 配置项目的基础地址
+  // routes: [...constantRoutes, ...asyncRouter] // 临时合并
+  routes: [...constantRoutes, ...asyncRouter]  // 路由权限之后的管理
 })
+
+export function resetRouter() {
+  const newRouter = createRouter()
+  router.matcher = newRouter.matcher // reset router
+}
+
+const router = createRouter()
 
 export default router;

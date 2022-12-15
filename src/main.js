@@ -6,20 +6,14 @@ require('@/utils/CustomUtil')
 
 import ElementUI from "element-ui";
 import "element-ui/lib/theme-chalk/index.css";
-
+import '@/styles/index.scss'
 import "@/assets/theme.less";
 import "@/assets/global.css";
 import "@/assets/iconfont/iconfont.css"
-
-import Ellipsis from '@/components/common/Ellipsis'
-import WDialog from '@/components/common/WDialog'
-import Tip from '@/components/common/Tip'
+import '@/icons' // icon
+import "./permission"
 
 Vue.use(ElementUI);
-Vue.use(Ellipsis);
-Vue.use(WDialog);
-Vue.use(Tip);
-
 Vue.config.productionTip = false
 
 Vue.prototype.BASE_URL = 'http://' + (process.env.NODE_ENV === 'development-' ? "192.168.31.220" : "192.168.31.220");
